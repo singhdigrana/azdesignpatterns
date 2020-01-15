@@ -1,6 +1,6 @@
 <#
     .DESCRIPTION
-        Start all the VM's scheduled to be stopped in all resource groups using the Run As Account (Service Principle)
+        Start all the VM's scheduled to be sstarted in all resource groups using the Run As Account (Service Principle)
 
     .NOTES
         AUTHOR: Azure Automation Team
