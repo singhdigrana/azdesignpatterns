@@ -1,18 +1,17 @@
 <#
     .DESCRIPTION
-        Find all the VM's in all resource groups and start/stop at specified time in scheduler using the Run As Account (Service Principle)
+        Find all the VM's scheduled to be stopped in all resource groups and using the Run As Account (Service Principle)
 
     .NOTES
         AUTHOR: Azure Automation Team
-        LASTEDIT: Jan 14, 2019
+        LASTEDIT: Jan 15, 2019
 #>
 
 $connectionName = "AzureRunAsConnection"
-try
-{
+try {
     # Get the connection "AzureRunAsConnection "
-    $servicePrincipalConnection=Get-AutomationConnection -Name $connectionName     
-
+    $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName     
+    
     "Logging in to Azure..."
     Add-AzureRmAccount `
         -ServicePrincipal `
@@ -21,21 +20,24 @@ try
         -CertificateThumbprint $servicePrincipalConnection.CertificateThumbprint 
 }
 catch {
-    if (!$servicePrincipalConnection)
-    {
+    if (!$servicePrincipalConnection) {
         $ErrorMessage = "Connection $connectionName not found."
         throw $ErrorMessage
-    } else{
+    }
+    else {
         Write-Error -Message $_.Exception
         throw $_.Exception
     }
 }
+$firstDayOfMonth = Get-Date -Day 1 -Hour 0 -Minute 0 -Second 0 -DisplayHint Date
+$todaysdate = Get-Date -DisplayHint Date
 # Get reference to each VM with tag scheduedstop=yes value and stop the VM
 $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
 ForEach ($vm in $vms) {          
-        if ($vm.Tags.Name -eq "scheduledstop" -and $vm.Tags.Value -eq "Yes")
-        {
+    if ($vm.Tags.Name -eq "scheduledstop" -and $vm.Tags.Value -eq "Yes") {
+        if ($todaysdate -ne $firstDayOfMonth) {
             Stop-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name -Force
             Write-Output ($vm.Name + " Virtual Machine stopped successfully!") 
-        }        
-    } 
+        }
+    }        
+} 
