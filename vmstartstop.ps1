@@ -4,7 +4,7 @@
 
     .NOTES
         AUTHOR: Azure Automation Team
-        LASTEDIT: Jan 14, 2019
+        LASTEDIT: Jan 15, 2019
 #>
 
 $connectionName = "AzureRunAsConnection"
