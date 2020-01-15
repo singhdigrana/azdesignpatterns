@@ -1,6 +1,6 @@
 <#
     .DESCRIPTION
-        Find all the VM's scheduled to be stopped in all resource groups and using the Run As Account (Service Principle)
+        Stop all the VM's scheduled to be stopped in all resource groups using the Run As Account (Service Principle)
 
     .NOTES
         AUTHOR: Azure Automation Team
@@ -40,4 +40,4 @@ ForEach ($vm in $vms) {
             Write-Output ($vm.Name + " Virtual Machine stopped successfully!") 
         }
     }        
-} 
+}

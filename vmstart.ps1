@@ -1,6 +1,6 @@
 <#
     .DESCRIPTION
-        Find all the VM's scheduled to start and start the VM except on holidays using the Run As Account (Service Principle)
+        Start all the VM's scheduled to be stopped in all resource groups using the Run As Account (Service Principle)
 
     .NOTES
         AUTHOR: Azure Automation Team
@@ -11,7 +11,7 @@ $connectionName = "AzureRunAsConnection"
 try {
     # Get the connection "AzureRunAsConnection "
     $servicePrincipalConnection = Get-AutomationConnection -Name $connectionName     
-
+    
     "Logging in to Azure..."
     Add-AzureRmAccount `
         -ServicePrincipal `
@@ -31,7 +31,7 @@ catch {
 }
 $todaysdate = Get-Date -DisplayHint Date
 $holiday = Get-Date -Day 5 -Hour - -Minute 0 -Second 0 -DisplayHint Date
-# Get reference to each VM with tag scheduedstop=yes value and stop the VM
+# Get reference to each VM with tag scheduedstart=yes value and start the VM
 $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
 ForEach ($vm in $vms) {          
     if ($vm.Tags.Name -eq "scheduledstart" -and $vm.Tags.Value -eq "Yes") {
