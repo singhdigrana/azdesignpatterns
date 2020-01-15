@@ -1,0 +1,1 @@
+D:\Projects\DTS-CMP\MyWorkspace\AzureDesignPatterns\Published\azdesignpatterns\Temporary.ps1
