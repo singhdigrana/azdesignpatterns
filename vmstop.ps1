@@ -1,7 +1,8 @@
 <#
     .DESCRIPTION
-        Stop all the VM's scheduled to be stopped in all resource groups using the Run As Account (Service Principle)
-
+        Stop all the VM's scheduled to stop using the Run As Account (Service Principle)
+        Before Stoping the VM, Check if this is not the first day of month which is usually a busy day Organisation.
+    
     .NOTES
         AUTHOR: Azure Automation Team
         LASTEDIT: Jan 15, 2019
