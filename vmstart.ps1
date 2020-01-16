@@ -31,9 +31,12 @@ catch {
     }
 }
 $todaysdate = Get-Date -DisplayHint Date
-$holidaylist = Get-Content "Holidaylist.txt"
-# $holiday = Get-Date -Day 5 -Hour - -Minute 0 -Second 0 -DisplayHint Date
-if (!$holidaylist.Contains($todaysdate.ToShortDateString())) {    
+# $holidaylist = Get-Content "Holidaylist.txt"
+$holidaylist = '6/10/2017', '6/11/2017', '1/16/2020'
+$dates = $holidaylist | ForEach-Object{[datetime]$_}
+if (!($dates -contains [datetime]::Today))
+{
+    Write-Host("No Holiday!")
     # Get reference to each VM with tag scheduedstart=yes value and start the VM
     $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
     ForEach ($vm in $vms) {          
@@ -46,6 +49,5 @@ if (!$holidaylist.Contains($todaysdate.ToShortDateString())) {
     }
 }
 else {
-    Write-Host ("Today is Holiday, so Virtual Machine is not started!")
+    Write-Host("Today is Holiday, so Virtual Machine is not started!!")
 }
-
