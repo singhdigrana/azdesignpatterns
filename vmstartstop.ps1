@@ -45,8 +45,7 @@ ForEach ($vm in $vms) {
             if ($todaysdate -eq $firstDayOfMonth -and $todaysdate -ne $holiday)
             {
                 Start-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name
-            }
-            Start-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name
+            }            
             Write-Output ($vm.Name + " Virtual Machine started successfully!") 
         }
         else {
