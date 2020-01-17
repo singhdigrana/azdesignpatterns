@@ -57,7 +57,7 @@ if ($current_time -ge $morningStartTime -and $current_time -le $morningEndTime) 
         }
     }
     else {
-        Write-Host("Today is Holiday, so Virtual Machine is not started!!")
+        Write-Host("Holiday : Virtual Machine is not started!!")
     }
 }
 else {
