@@ -30,13 +30,14 @@ catch {
         throw $_.Exception
     }
 }
-$todaysdate = Get-Date -DisplayHint Date
-# $holidaylist = Get-Content "Holidaylist.txt"
-$holidaylist = '6/10/2017', '6/11/2017', '1/16/2020'
-$dates = $holidaylist | ForEach-Object{[datetime]$_}
-if (!($dates -contains [datetime]::Today))
-{
-    Write-Host("No Holiday!")
+$uri = "https://raw.githubusercontent.com/singhdigrana/azdesignpatterns/master/Holidaylist.txt"
+$webRequest = Invoke-WebRequest -uri $uri -UseBasicParsing
+
+$holidaylist = $webRequest.Content
+$holidaylist = $holidaylist.Split(",")
+# $dates = $holidaylist | ForEach-Object { [datetime]$_ }
+$holiday = $holidaylist | ForEach-Object { [datetime]$_ }
+if (!($holiday -contains [datetime]::Today)) {   
     # Get reference to each VM with tag scheduedstart=yes value and start the VM
     $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
     ForEach ($vm in $vms) {          
@@ -49,5 +50,11 @@ if (!($dates -contains [datetime]::Today))
     }
 }
 else {
-    Write-Host("Today is Holiday, so Virtual Machine is not started!!")
+    Write-Output("Its Holiday! Virtual Machines can not be started!!")
+    $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
+    ForEach ($vm in $vms) {      
+        Stop-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name -Force
+        Write-Output ($vm.Name + " Virtual Machine stopped successfully!") 
+    }
 }
+$holidaylist = $null;

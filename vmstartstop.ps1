@@ -6,7 +6,7 @@
 
     .NOTES
         AUTHOR: Azure Automation Team
-        LASTEDIT: Jan 15, 2019
+        LASTEDIT: Jan 17, 2019
 #>
 
 $connectionName = "AzureRunAsConnection"
@@ -40,15 +40,16 @@ $morningEndTime = "11:55"
 
 if ($current_time -ge $morningStartTime -and $current_time -le $morningEndTime) {
     Write-Host("Its Morning-start the machine");
-    # $holidaylist = Get-Content "Holidaylist.txt"
-    $holidaylist = '6/10/2017', '6/11/2017', '1/16/2020'
-    $dates = $holidaylist | ForEach-Object { [datetime]$_ }
-    if (!($dates -contains [datetime]::Today)) {
-        Write-Host("No Holiday!")
-        # Get reference to each VM with tag scheduedstart=yes value and start the VM
+    $uri = "https://raw.githubusercontent.com/singhdigrana/azdesignpatterns/master/Holidaylist.txt"
+    $webRequest = Invoke-WebRequest -uri $uri -UseBasicParsing
+
+    $holidaylist = $webRequest.Content
+    $holidaylist = $holidaylist.Split(",")
+    $holiday = $holidaylist | ForEach-Object { [datetime]$_ }
+    if (!($holiday -contains [datetime]::Today)) {   
         $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
         ForEach ($vm in $vms) {          
-            if ($vm.Tags.Name -eq "scheduledstart" -and $vm.Tags.Value -eq "Yes") {
+            if ($vm.Tags.Name -eq "startstop" -and $vm.Tags.Value -eq "True") {
                 if ($todaysdate -ne $holiday) {
                     Start-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name
                     Write-Output ($vm.Name + " Virtual Machine started successfully!") 
@@ -57,8 +58,15 @@ if ($current_time -ge $morningStartTime -and $current_time -le $morningEndTime) 
         }
     }
     else {
-        Write-Host("Today is Holiday, so Virtual Machine is not started!!")
+        Write-Output("Its Holiday! Virtual Machines can not be started!!")
+        $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
+        ForEach ($vm in $vms) {          
+            
+            Stop-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name -Force
+            Write-Output ($vm.Name + " Virtual Machine stopped successfully!") 
+        }
     }
+    $holidaylist = $null;
 }
 else {
     #Stop the Machine
@@ -66,10 +74,9 @@ else {
     # Get reference to each VM with tag scheduedstop=yes value and stop the VM
     $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
     ForEach ($vm in $vms) {          
-        if ($vm.Tags.Name -eq "scheduledstop" -and $vm.Tags.Value -eq "Yes") {
+        if ($vm.Tags.Name -eq "startstop" -and $vm.Tags.Value -eq "True") {
             if ($todaysdate -ne $firstDayOfMonth) {
                 Stop-AzureRmVM -ResourceGroupName $vm.ResourceGroupName -Name $vm.Name -Force
-                Write-Output ($vm.Name + " Virtual Machine stopped successfully!") 
             }
         }        
     }
