@@ -2,3 +2,5 @@ Temp.ps1
 test-cmdlets.ps1
 Holidaylist-mmddyyyy.txt
 startstop.ps1
+vmstart.ps1
+vmstop.ps1
