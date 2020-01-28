@@ -1,8 +1,10 @@
 # Automatic Start Stop VM
-This repository stores custom azure design patterns.
+This repository stores custom azure design patterns.  
 
-Design pattern for automatic VM startup and shutdown
-Solution overview
+Design pattern for automatic VM startup and shutdown  
+
+Solution overview  
+
 Azure Automation is a service in Azure that allows to automate Azure management tasks and to orchestrate actions across external systems from right within Azure. Runbooks in Azure Automation are used to create different tasks. 
 In this Pattern we have a runbook called vmstartstop which start and stop the VM based on different criteria’s as mentioned below.
 1.	All VM that needs to be managed using this runbook should create a Tag named “startstop” with value as “True”
