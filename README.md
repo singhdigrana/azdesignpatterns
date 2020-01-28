@@ -1,4 +1,4 @@
-# azdesignpatterns - Automatic Start Stop
+# Automatic Start Stop VM
 This repository stores custom azure design patterns.
 
 Design pattern for automatic VM startup and shutdown
