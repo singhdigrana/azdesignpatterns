@@ -34,7 +34,8 @@ catch {
 $todaysdate = Get-Date -DisplayHint Date
 $firstDayOfMonth = Get-Date -Day 1 -Hour 0 -Minute 0 -Second 0 -DisplayHint Date
 $current_time = Get-Date -DisplayHint Time
-# $current_time = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::Now,"India Standard Time")
+# $timezoneid = Get-AutomationVariable -Name 'timezoneid'
+# $current_time = [System.TimeZoneInfo]::ConvertTimeBySystemTimeZoneId([DateTime]::Now,$timezoneid)
 # $current_time = Get-Date($current_time) -DisplayHint Time
 $morning_start_time = Get-AutomationVariable -Name 'morning_start_time'
 $morning_end_time = Get-AutomationVariable -Name 'morning_end_time'
