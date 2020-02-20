@@ -45,7 +45,7 @@ Write-Output ("Current TimeZone is: " + $timezoneid)
 Write-Output(Get-Date)
 # Start the VM
 if ($current_time -ge $morning_start_time -and $current_time -le $morning_end_time) {        
-    Write-Output("Starting the virtual machine")
+    Write-Output("Its Morning - start the virtual machine")
     $uri = "https://raw.githubusercontent.com/singhdigrana/azdesignpatterns/master/Holidaylist.txt"
     $webRequest = Invoke-WebRequest -uri $uri -UseBasicParsing
 
@@ -76,7 +76,7 @@ if ($current_time -ge $morning_start_time -and $current_time -le $morning_end_ti
 }
 else {
     #Stop the Machine
-    Write-Output("Stopping the virtual machine");    
+    Write-Output("Its Night - Stop the virtual machine"); 
     $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
     ForEach ($vm in $vms) {          
         if ($vm.Tags.Name -eq "startstop" -and $vm.Tags.Value -eq "True") {
