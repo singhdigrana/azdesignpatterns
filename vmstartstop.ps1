@@ -6,7 +6,7 @@
 
     .NOTES
         AUTHOR: Azure Automation Team
-        LASTEDIT: Jan 17, 2019
+        LASTEDIT: Feb 20, 2020
 #>
 
 $connectionName = "AzureRunAsConnection"
@@ -40,11 +40,12 @@ $current_time = Get-Date($current_time) -DisplayHint Time
 $morning_start_time = Get-AutomationVariable -Name 'morning_start_time'
 $morning_end_time = Get-AutomationVariable -Name 'morning_end_time'
 
+Write-Output ("Current TimeZone is: " + $timezoneid)
 #By Default it is taking UK time
 Write-Output(Get-Date)
 # Start the VM
 if ($current_time -ge $morning_start_time -and $current_time -le $morning_end_time) {        
-    Write-Output("Its Morning - start the virtual machine")
+    Write-Output("Starting the virtual machine")
     $uri = "https://raw.githubusercontent.com/singhdigrana/azdesignpatterns/master/Holidaylist.txt"
     $webRequest = Invoke-WebRequest -uri $uri -UseBasicParsing
 
@@ -63,7 +64,7 @@ if ($current_time -ge $morning_start_time -and $current_time -le $morning_end_ti
         }
     }
     else {
-        Write-Output("Its Holiday! Virtual Machines can not be started!!")
+        Write-Output("Today is Holiday! Virtual Machines can not be started!!")
         $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
         ForEach ($vm in $vms) {          
             if ($vm.Tags.Name -eq "startstop" -and $vm.Tags.Value -eq "True") {
@@ -75,7 +76,7 @@ if ($current_time -ge $morning_start_time -and $current_time -le $morning_end_ti
 }
 else {
     #Stop the Machine
-    Write-Output("Its Night - Stop the virtual machine");    
+    Write-Output("Stopping the virtual machine");    
     $vms = Get-AzureRmResource | Where-Object { $_.ResourceType -eq "Microsoft.Compute/virtualMachines" -and $_.Tags.Values } 
     ForEach ($vm in $vms) {          
         if ($vm.Tags.Name -eq "startstop" -and $vm.Tags.Value -eq "True") {
