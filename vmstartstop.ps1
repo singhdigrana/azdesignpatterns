@@ -50,9 +50,7 @@ if ($current_time -ge $morning_start_time -and $current_time -le $morning_end_ti
     # $uri = "https://raw.githubusercontent.com/singhdigrana/azdesignpatterns/master/Holidaylist.txt"
     # $webRequest = Invoke-WebRequest -uri $uri -UseBasicParsing
     $webRequest = Invoke-WebRequest -uri $holidaylist -UseBasicParsing
-
     $holidaylist = $webRequest.Content
-    Write-Output("New Holidaylist: "+ $holidaylist)
     $holidaylist = $holidaylist.Split(",")    
     $holiday = $holidaylist | ForEach-Object { [datetime]$_ }
     if (!($holiday -contains [datetime]::Today)) {   
